@@ -10,6 +10,6 @@ export async function GET() {
     return apiSuccess(services);
   } catch (error) {
     console.error("GET /api/services error:", error);
-    return apiError("Failed to fetch services", 500);
+    return apiError("获取服务列表失败", 500);
   }
 }

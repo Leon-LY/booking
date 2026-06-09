@@ -15,7 +15,7 @@ export async function GET() {
     return apiSuccess(settingsMap);
   } catch (error) {
     console.error("GET /api/admin/settings error:", error);
-    return apiError("Failed to fetch settings", 500);
+    return apiError("获取设置失败", 500);
   }
 }
 
@@ -28,7 +28,7 @@ export async function PUT(request: Request) {
     const { settings } = body as { settings: Record<string, string> };
 
     if (!settings || typeof settings !== "object") {
-      return apiError("settings object is required");
+      return apiError("settings 对象不能为空");
     }
 
     // Upsert each setting
@@ -45,6 +45,6 @@ export async function PUT(request: Request) {
     return apiSuccess({ message: "Settings updated" });
   } catch (error) {
     console.error("PUT /api/admin/settings error:", error);
-    return apiError("Failed to update settings", 500);
+    return apiError("更新设置失败", 500);
   }
 }

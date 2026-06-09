@@ -27,7 +27,7 @@ export async function PUT(
     return apiSuccess(timeslot);
   } catch (error) {
     console.error("PUT /api/admin/timeslots/[id] error:", error);
-    return apiError("Failed to update time slot", 500);
+    return apiError("更新时段失败", 500);
   }
 }
 
@@ -44,6 +44,6 @@ export async function DELETE(
     return apiSuccess({ message: "Time slot deleted" });
   } catch (error) {
     console.error("DELETE /api/admin/timeslots/[id] error:", error);
-    return apiError("Failed to delete time slot", 500);
+    return apiError("删除时段失败", 500);
   }
 }

@@ -14,11 +14,11 @@ import {
 import { signOut } from "next-auth/react";
 
 const navItems = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/bookings", label: "Bookings", icon: CalendarCheck },
-  { href: "/admin/services", label: "Services", icon: Package },
-  { href: "/admin/clients", label: "Clients", icon: Users },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
+  { href: "/admin", label: "仪表盘", icon: LayoutDashboard },
+  { href: "/admin/bookings", label: "预约管理", icon: CalendarCheck },
+  { href: "/admin/services", label: "服务管理", icon: Package },
+  { href: "/admin/clients", label: "客户管理", icon: Users },
+  { href: "/admin/settings", label: "系统设置", icon: Settings },
 ];
 
 export function AdminSidebar() {
@@ -29,10 +29,10 @@ export function AdminSidebar() {
       <div className="flex items-center gap-2 h-16 px-6 border-b border-sidebar-border">
         <div className="w-8 h-8 rounded-lg bg-sidebar-primary flex items-center justify-center">
           <span className="text-sidebar-primary-foreground font-bold text-sm">
-            D
+            设
           </span>
         </div>
-        <span className="font-bold text-lg">Admin</span>
+        <span className="font-bold text-lg">管理后台</span>
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
@@ -62,7 +62,7 @@ export function AdminSidebar() {
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent w-full transition-colors"
         >
           <LogOut className="w-5 h-5" />
-          Sign Out
+          退出登录
         </button>
       </div>
     </aside>

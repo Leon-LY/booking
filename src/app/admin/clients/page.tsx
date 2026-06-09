@@ -45,6 +45,14 @@ interface ClientListItem {
   _count: { bookings: number };
 }
 
+const statusLabels: Record<string, string> = {
+  PENDING: "待确认",
+  CONFIRMED: "已确认",
+  COMPLETED: "已完成",
+  CANCELLED: "已取消",
+  NO_SHOW: "未到店",
+};
+
 const statusVariant: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
   PENDING: "default",
   CONFIRMED: "secondary",
@@ -81,7 +89,7 @@ export default function AdminClientsPage() {
         setError(data.error);
       }
     } catch {
-      setError("Failed to load clients");
+      setError("加载客户列表失败");
     } finally {
       setLoading(false);
     }
@@ -111,12 +119,12 @@ export default function AdminClientsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Clients</h1>
+      <h1 className="text-2xl font-bold">客户管理</h1>
 
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
-          placeholder="Search by name, phone, or email..."
+          placeholder="搜索姓名、手机号或邮箱..."
           value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           className="pl-9"
@@ -132,18 +140,21 @@ export default function AdminClientsPage() {
       ) : error ? (
         <ErrorState message={error} onRetry={fetchClients} />
       ) : clients.length === 0 ? (
-        <EmptyState title="No clients found" description={search ? "Try a different search term." : "Clients will appear when someone makes a booking."} />
+        <EmptyState
+          title="暂无客户"
+          description={search ? "换个关键词试试。" : "客户预约后将自动出现在这里。"}
+        />
       ) : (
         <>
           <div className="overflow-x-auto border rounded-lg">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-muted/50 text-left">
-                  <th className="p-3 font-medium">Name</th>
-                  <th className="p-3 font-medium">Phone</th>
-                  <th className="p-3 font-medium">Email</th>
-                  <th className="p-3 font-medium">Bookings</th>
-                  <th className="p-3 font-medium">Actions</th>
+                  <th className="p-3 font-medium">姓名</th>
+                  <th className="p-3 font-medium">手机号</th>
+                  <th className="p-3 font-medium">邮箱</th>
+                  <th className="p-3 font-medium">预约次数</th>
+                  <th className="p-3 font-medium">操作</th>
                 </tr>
               </thead>
               <tbody>
@@ -169,7 +180,7 @@ export default function AdminClientsPage() {
           {totalPages > 1 && (
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">
-                Page {page} of {totalPages}
+                第 {page} / {totalPages} 页
               </span>
               <div className="flex gap-2">
                 <Button
@@ -194,11 +205,10 @@ export default function AdminClientsPage() {
         </>
       )}
 
-      {/* Client Detail Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Client Details</DialogTitle>
+            <DialogTitle>客户详情</DialogTitle>
           </DialogHeader>
           {detailLoading ? (
             <div className="space-y-2">
@@ -209,24 +219,24 @@ export default function AdminClientsPage() {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <Label className="text-muted-foreground">Name</Label>
+                  <Label className="text-muted-foreground">姓名</Label>
                   <p className="font-medium">{selectedClient.name}</p>
                 </div>
                 <div>
-                  <Label className="text-muted-foreground">Phone</Label>
+                  <Label className="text-muted-foreground">手机号</Label>
                   <p className="font-medium">{selectedClient.phone}</p>
                 </div>
                 <div>
-                  <Label className="text-muted-foreground">Email</Label>
+                  <Label className="text-muted-foreground">邮箱</Label>
                   <p className="font-medium">{selectedClient.email || "-"}</p>
                 </div>
                 <div>
-                  <Label className="text-muted-foreground">Address</Label>
+                  <Label className="text-muted-foreground">地址</Label>
                   <p className="font-medium">{selectedClient.address || "-"}</p>
                 </div>
                 {selectedClient.note && (
                   <div className="col-span-2">
-                    <Label className="text-muted-foreground">Note</Label>
+                    <Label className="text-muted-foreground">备注</Label>
                     <p className="text-sm mt-1">{selectedClient.note}</p>
                   </div>
                 )}
@@ -234,7 +244,7 @@ export default function AdminClientsPage() {
 
               {selectedClient.bookings.length > 0 && (
                 <div>
-                  <Label className="mb-2 block">Booking History</Label>
+                  <Label className="mb-2 block">预约记录</Label>
                   <div className="space-y-2">
                     {selectedClient.bookings.map((b) => (
                       <div
@@ -244,10 +254,12 @@ export default function AdminClientsPage() {
                         <div>
                           <span className="font-medium">{b.service.name}</span>
                           <span className="text-muted-foreground ml-2">
-                            {format(parseISO(b.date), "MMM d, yyyy")} {b.startTime}
+                            {format(parseISO(b.date), "yyyy年M月d日")} {b.startTime}
                           </span>
                         </div>
-                        <Badge variant={statusVariant[b.status]}>{b.status}</Badge>
+                        <Badge variant={statusVariant[b.status]}>
+                          {statusLabels[b.status]}
+                        </Badge>
                       </div>
                     ))}
                   </div>
@@ -256,7 +268,7 @@ export default function AdminClientsPage() {
             </div>
           ) : (
             <p className="text-center text-muted-foreground py-4">
-              Failed to load client details.
+              加载客户详情失败。
             </p>
           )}
         </DialogContent>

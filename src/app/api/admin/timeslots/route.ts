@@ -13,7 +13,7 @@ export async function GET() {
     return apiSuccess(timeslots);
   } catch (error) {
     console.error("GET /api/admin/timeslots error:", error);
-    return apiError("Failed to fetch time slots", 500);
+    return apiError("获取时段列表失败", 500);
   }
 }
 
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     const { dayOfWeek, startTime, endTime } = body;
 
     if (dayOfWeek === undefined || !startTime || !endTime) {
-      return apiError("dayOfWeek, startTime, and endTime are required");
+      return apiError("星期、开始时间和结束时间不能为空");
     }
 
     const timeslot = await prisma.timeSlot.create({
@@ -40,6 +40,6 @@ export async function POST(request: Request) {
     return apiSuccess(timeslot);
   } catch (error) {
     console.error("POST /api/admin/timeslots error:", error);
-    return apiError("Failed to create time slot", 500);
+    return apiError("创建时段失败", 500);
   }
 }

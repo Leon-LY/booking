@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/error-state";
 import { toast } from "sonner";
-import { format, parseISO, addDays } from "date-fns";
+import { format, addDays } from "date-fns";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -35,9 +35,9 @@ interface AvailableSlot {
 }
 
 const clientFormSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  phone: z.string().regex(/^\d{10,15}$/, "Enter a valid phone number (10-15 digits)"),
-  email: z.string().email("Invalid email").optional().or(z.literal("")),
+  name: z.string().min(2, "姓名至少需要 2 个字符"),
+  phone: z.string().regex(/^\d{10,15}$/, "请输入有效的手机号码（10-15 位数字）"),
+  email: z.string().email("邮箱格式不正确").optional().or(z.literal("")),
   address: z.string().optional(),
   note: z.string().optional(),
 });
@@ -83,10 +83,10 @@ export default function BookingPage() {
         if (data.success) {
           setService(data.data);
         } else {
-          setError("Service not found");
+          setError("未找到该服务");
         }
       })
-      .catch(() => setError("Failed to load service"))
+      .catch(() => setError("加载服务失败"))
       .finally(() => setLoading(false));
   }, [serviceId]);
 
@@ -103,7 +103,7 @@ export default function BookingPage() {
           setSlots(data.data);
         }
       } catch {
-        toast.error("Failed to load available slots");
+        toast.error("加载可用时段失败");
       } finally {
         setSlotsLoading(false);
       }
@@ -156,10 +156,10 @@ export default function BookingPage() {
       if (data.success) {
         router.push(`/booking/success?ref=${data.data.id}`);
       } else {
-        toast.error(data.error || "Failed to create booking");
+        toast.error(data.error || "创建预约失败");
       }
     } catch {
-      toast.error("Network error. Please try again.");
+      toast.error("网络错误，请重试。");
     } finally {
       setSubmitting(false);
     }
@@ -186,8 +186,8 @@ export default function BookingPage() {
         <Header />
         <main className="flex-1 py-16">
           <ErrorState
-            title="Service Not Found"
-            message={error || "The service you're looking for doesn't exist."}
+            title="服务未找到"
+            message={error || "您要预约的服务不存在或已下架。"}
           />
         </main>
         <Footer />
@@ -205,7 +205,7 @@ export default function BookingPage() {
           {step === 1 && (
             <Card>
               <CardHeader>
-                <CardTitle>Confirm Your Service</CardTitle>
+                <CardTitle>确认预约服务</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-start gap-4 p-4 bg-muted/50 rounded-lg">
@@ -217,18 +217,18 @@ export default function BookingPage() {
                     <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Clock className="w-4 h-4" />
-                        {service.duration} minutes
+                        {service.duration} 分钟
                       </span>
                       <span>
                         {Number(service.price) === 0
-                          ? "Free"
+                          ? "免费"
                           : `¥${Number(service.price)}`}
                       </span>
                     </div>
                   </div>
                 </div>
                 <Button onClick={handleNext} className="w-full">
-                  Next: Select Time <ArrowRight className="ml-2 w-4 h-4" />
+                  下一步：选择时间 <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </CardContent>
             </Card>
@@ -237,7 +237,7 @@ export default function BookingPage() {
           {step === 2 && (
             <Card>
               <CardHeader>
-                <CardTitle>Select Date & Time</CardTitle>
+                <CardTitle>选择日期与时间</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex justify-center">
@@ -253,7 +253,7 @@ export default function BookingPage() {
                 {date && (
                   <div>
                     <h4 className="font-medium mb-3">
-                      Available times for {format(date, "MMMM d, yyyy")}:
+                      {format(date, "yyyy 年 M 月 d 日")} 可用时段：
                     </h4>
                     {slotsLoading ? (
                       <div className="grid grid-cols-3 gap-2">
@@ -263,7 +263,7 @@ export default function BookingPage() {
                       </div>
                     ) : slots.length === 0 ? (
                       <p className="text-sm text-muted-foreground py-4 text-center">
-                        No available slots for this date. Please try another day.
+                        该日期暂无可用时段，请选择其他日期。
                       </p>
                     ) : (
                       <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
@@ -288,14 +288,14 @@ export default function BookingPage() {
 
                 <div className="flex gap-3">
                   <Button variant="outline" onClick={handleBack} className="flex-1">
-                    <ArrowLeft className="mr-2 w-4 h-4" /> Back
+                    <ArrowLeft className="mr-2 w-4 h-4" /> 上一步
                   </Button>
                   <Button
                     onClick={handleNext}
                     disabled={!selectedSlot}
                     className="flex-1"
                   >
-                    Next: Your Info <ArrowRight className="ml-2 w-4 h-4" />
+                    下一步：填写信息 <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
                 </div>
               </CardContent>
@@ -305,25 +305,24 @@ export default function BookingPage() {
           {step === 3 && (
             <Card>
               <CardHeader>
-                <CardTitle>Your Information</CardTitle>
+                <CardTitle>您的信息</CardTitle>
               </CardHeader>
               <CardContent>
-                {/* Booking summary */}
                 <div className="p-3 bg-muted/50 rounded-lg mb-6 text-sm">
                   <div className="flex items-center gap-2 mb-1">
                     <CheckCircle className="w-4 h-4 text-primary" />
                     <span className="font-medium">{service.name}</span>
                   </div>
                   <p className="text-muted-foreground ml-6">
-                    {date && format(date, "MMMM d, yyyy")} at{" "}
+                    {date && format(date, "yyyy 年 M 月 d 日")}{" "}
                     {selectedSlot?.startTime} - {selectedSlot?.endTime}
                   </p>
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                   <div>
-                    <Label htmlFor="name">Name *</Label>
-                    <Input id="name" {...register("name")} placeholder="Your full name" />
+                    <Label htmlFor="name">姓名 *</Label>
+                    <Input id="name" {...register("name")} placeholder="请输入您的姓名" />
                     {errors.name && (
                       <p className="text-sm text-destructive mt-1">
                         {errors.name.message}
@@ -332,11 +331,11 @@ export default function BookingPage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="phone">Phone *</Label>
+                    <Label htmlFor="phone">手机号 *</Label>
                     <Input
                       id="phone"
                       {...register("phone")}
-                      placeholder="Your phone number"
+                      placeholder="请输入手机号码"
                     />
                     {errors.phone && (
                       <p className="text-sm text-destructive mt-1">
@@ -346,7 +345,7 @@ export default function BookingPage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">邮箱</Label>
                     <Input
                       id="email"
                       type="email"
@@ -361,20 +360,20 @@ export default function BookingPage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="address">Address</Label>
+                    <Label htmlFor="address">地址</Label>
                     <Input
                       id="address"
                       {...register("address")}
-                      placeholder="Your address (optional)"
+                      placeholder="请输入您的地址（选填）"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="note">Note</Label>
+                    <Label htmlFor="note">备注</Label>
                     <Textarea
                       id="note"
                       {...register("note")}
-                      placeholder="Any special requests or notes..."
+                      placeholder="如有特殊需求请在此说明…"
                       rows={3}
                     />
                   </div>
@@ -386,7 +385,7 @@ export default function BookingPage() {
                       onClick={handleBack}
                       className="flex-1"
                     >
-                      <ArrowLeft className="mr-2 w-4 h-4" /> Back
+                      <ArrowLeft className="mr-2 w-4 h-4" /> 上一步
                     </Button>
                     <Button
                       type="submit"
@@ -396,10 +395,10 @@ export default function BookingPage() {
                       {submitting ? (
                         <>
                           <Loader2 className="mr-2 w-4 h-4 animate-spin" />
-                          Submitting...
+                          提交中...
                         </>
                       ) : (
-                        "Confirm Booking"
+                        "确认预约"
                       )}
                     </Button>
                   </div>

@@ -39,6 +39,6 @@ export async function GET(request: Request) {
     return apiSuccess(clients, getPaginationMeta(total, page, limit));
   } catch (error) {
     console.error("GET /api/admin/clients error:", error);
-    return apiError("Failed to fetch clients", 500);
+    return apiError("获取客户列表失败", 500);
   }
 }

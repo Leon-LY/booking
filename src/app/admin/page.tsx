@@ -8,7 +8,7 @@ import { Metadata } from "next";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Dashboard",
+  title: "仪表盘",
 };
 
 async function getDashboardData() {
@@ -67,6 +67,14 @@ async function getDashboardData() {
   };
 }
 
+const statusLabels: Record<string, string> = {
+  PENDING: "待确认",
+  CONFIRMED: "已确认",
+  COMPLETED: "已完成",
+  CANCELLED: "已取消",
+  NO_SHOW: "未到店",
+};
+
 const statusVariant: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
   PENDING: "default",
   CONFIRMED: "secondary",
@@ -80,28 +88,28 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+      <h1 className="text-2xl font-bold">仪表盘</h1>
 
       <StatsCards stats={stats} />
 
       <Card>
         <CardHeader>
-          <CardTitle>Recent Bookings</CardTitle>
+          <CardTitle>最近预约</CardTitle>
         </CardHeader>
         <CardContent>
           {recentBookings.length === 0 ? (
             <p className="text-sm text-muted-foreground py-4 text-center">
-              No bookings yet.
+              暂无预约记录。
             </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b text-left">
-                    <th className="pb-3 font-medium text-muted-foreground">Client</th>
-                    <th className="pb-3 font-medium text-muted-foreground">Service</th>
-                    <th className="pb-3 font-medium text-muted-foreground">Date</th>
-                    <th className="pb-3 font-medium text-muted-foreground">Status</th>
+                    <th className="pb-3 font-medium text-muted-foreground">客户</th>
+                    <th className="pb-3 font-medium text-muted-foreground">服务</th>
+                    <th className="pb-3 font-medium text-muted-foreground">日期</th>
+                    <th className="pb-3 font-medium text-muted-foreground">状态</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -119,7 +127,7 @@ export default async function AdminDashboardPage() {
                       </td>
                       <td className="py-3">
                         <Badge variant={statusVariant[booking.status]}>
-                          {booking.status}
+                          {statusLabels[booking.status]}
                         </Badge>
                       </td>
                     </tr>

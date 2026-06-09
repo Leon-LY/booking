@@ -2,9 +2,9 @@ import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 
 const steps = [
-  { step: 1, label: "Confirm Service" },
-  { step: 2, label: "Select Time" },
-  { step: 3, label: "Your Info" },
+  { step: 1, label: "确认服务" },
+  { step: 2, label: "选择时间" },
+  { step: 3, label: "填写信息" },
 ];
 
 interface StepIndicatorProps {

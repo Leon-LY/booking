@@ -11,6 +11,6 @@ export async function GET() {
     return apiSuccess(settingsMap);
   } catch (error) {
     console.error("GET /api/settings error:", error);
-    return apiError("Failed to fetch settings", 500);
+    return apiError("获取站点设置失败", 500);
   }
 }

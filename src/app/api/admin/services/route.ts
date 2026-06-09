@@ -18,7 +18,7 @@ export async function GET() {
     return apiSuccess(services);
   } catch (error) {
     console.error("GET /api/admin/services error:", error);
-    return apiError("Failed to fetch services", 500);
+    return apiError("获取服务列表失败", 500);
   }
 }
 
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     const { name, description, summary, price, duration, imageUrl, category, sortOrder } = body;
 
     if (!name || !description || !summary) {
-      return apiError("name, description, and summary are required");
+      return apiError("名称、描述和简介不能为空");
     }
 
     const service = await prisma.service.create({
@@ -50,6 +50,6 @@ export async function POST(request: Request) {
     return apiSuccess(service);
   } catch (error) {
     console.error("POST /api/admin/services error:", error);
-    return apiError("Failed to create service", 500);
+    return apiError("创建服务失败", 500);
   }
 }

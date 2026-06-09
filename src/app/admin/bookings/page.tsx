@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
   DialogContent,
@@ -43,6 +42,14 @@ interface Booking {
   service: { id: string; name: string; duration: number; price: number };
   client: { id: string; name: string; phone: string; email: string | null };
 }
+
+const statusLabels: Record<string, string> = {
+  PENDING: "待确认",
+  CONFIRMED: "已确认",
+  COMPLETED: "已完成",
+  CANCELLED: "已取消",
+  NO_SHOW: "未到店",
+};
 
 const statusVariant: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
   PENDING: "default",
@@ -84,7 +91,7 @@ export default function AdminBookingsPage() {
         setError(data.error);
       }
     } catch {
-      setError("Failed to load bookings");
+      setError("加载预约列表失败");
     } finally {
       setLoading(false);
     }
@@ -103,13 +110,13 @@ export default function AdminBookingsPage() {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success(`Booking status updated to ${newStatus}`);
+        toast.success(`预约状态已更新为"${statusLabels[newStatus]}"`);
         fetchBookings();
       } else {
         toast.error(data.error);
       }
     } catch {
-      toast.error("Failed to update booking");
+      toast.error("更新失败");
     }
   };
 
@@ -123,12 +130,12 @@ export default function AdminBookingsPage() {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success("Note saved");
+        toast.success("备注已保存");
         setDialogOpen(false);
         fetchBookings();
       }
     } catch {
-      toast.error("Failed to save note");
+      toast.error("保存失败");
     }
   };
 
@@ -142,14 +149,13 @@ export default function AdminBookingsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Bookings</h1>
+      <h1 className="text-2xl font-bold">预约管理</h1>
 
-      {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder="Search client name, phone, or service..."
+            placeholder="搜索客户姓名、手机号或服务..."
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             className="pl-9"
@@ -157,17 +163,16 @@ export default function AdminBookingsPage() {
         </div>
         <Select value={status} onValueChange={(v) => { if (v) { setStatus(v); setPage(1); } }}>
           <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="Status" />
+            <SelectValue placeholder="状态" />
           </SelectTrigger>
           <SelectContent>
             {statusOptions.map((s) => (
-              <SelectItem key={s} value={s}>{s === "ALL" ? "All Status" : s}</SelectItem>
+              <SelectItem key={s} value={s}>{s === "ALL" ? "全部状态" : statusLabels[s] || s}</SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
 
-      {/* Table */}
       {loading ? (
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -177,19 +182,19 @@ export default function AdminBookingsPage() {
       ) : error ? (
         <ErrorState message={error} onRetry={fetchBookings} />
       ) : bookings.length === 0 ? (
-        <EmptyState title="No bookings found" description="Bookings will appear here when clients make appointments." />
+        <EmptyState title="暂无预约记录" description="客户预约后将显示在这里。" />
       ) : (
         <>
           <div className="overflow-x-auto border rounded-lg">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-muted/50 text-left">
-                  <th className="p-3 font-medium">Client</th>
-                  <th className="p-3 font-medium">Service</th>
-                  <th className="p-3 font-medium">Date</th>
-                  <th className="p-3 font-medium">Time</th>
-                  <th className="p-3 font-medium">Status</th>
-                  <th className="p-3 font-medium">Actions</th>
+                  <th className="p-3 font-medium">客户</th>
+                  <th className="p-3 font-medium">服务</th>
+                  <th className="p-3 font-medium">日期</th>
+                  <th className="p-3 font-medium">时间</th>
+                  <th className="p-3 font-medium">状态</th>
+                  <th className="p-3 font-medium">操作</th>
                 </tr>
               </thead>
               <tbody>
@@ -200,23 +205,23 @@ export default function AdminBookingsPage() {
                       <div className="text-xs text-muted-foreground">{b.client.phone}</div>
                     </td>
                     <td className="p-3">{b.service.name}</td>
-                    <td className="p-3">{format(parseISO(b.date), "MMM d, yyyy")}</td>
+                    <td className="p-3">{format(parseISO(b.date), "yyyy年M月d日")}</td>
                     <td className="p-3">{b.startTime} - {b.endTime}</td>
                     <td className="p-3">
                       <Select
                         value={b.status}
                         onValueChange={(v) => { if (v) handleStatusChange(b.id, v); }}
                       >
-                        <SelectTrigger className="w-[120px] h-8">
+                        <SelectTrigger className="w-[110px] h-8">
                           <SelectValue>
                             <Badge variant={statusVariant[b.status]} className="text-xs">
-                              {b.status}
+                              {statusLabels[b.status]}
                             </Badge>
                           </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                           {statusOptions.filter(s => s !== "ALL").map((s) => (
-                            <SelectItem key={s} value={s}>{s}</SelectItem>
+                            <SelectItem key={s} value={s}>{statusLabels[s]}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -232,11 +237,10 @@ export default function AdminBookingsPage() {
             </table>
           </div>
 
-          {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">
-                Page {page} of {totalPages} ({total} total)
+                第 {page} / {totalPages} 页（共 {total} 条）
               </span>
               <div className="flex gap-2">
                 <Button
@@ -261,63 +265,62 @@ export default function AdminBookingsPage() {
         </>
       )}
 
-      {/* Detail Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Booking Details</DialogTitle>
+            <DialogTitle>预约详情</DialogTitle>
           </DialogHeader>
           {selectedBooking && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <Label className="text-muted-foreground">Client</Label>
+                  <Label className="text-muted-foreground">客户</Label>
                   <p className="font-medium">{selectedBooking.client.name}</p>
                 </div>
                 <div>
-                  <Label className="text-muted-foreground">Phone</Label>
+                  <Label className="text-muted-foreground">手机</Label>
                   <p className="font-medium">{selectedBooking.client.phone}</p>
                 </div>
                 <div>
-                  <Label className="text-muted-foreground">Service</Label>
+                  <Label className="text-muted-foreground">服务</Label>
                   <p className="font-medium">{selectedBooking.service.name}</p>
                 </div>
                 <div>
-                  <Label className="text-muted-foreground">Date</Label>
+                  <Label className="text-muted-foreground">日期</Label>
                   <p className="font-medium">
-                    {format(parseISO(selectedBooking.date), "MMM d, yyyy")}
+                    {format(parseISO(selectedBooking.date), "yyyy年M月d日")}
                   </p>
                 </div>
                 <div>
-                  <Label className="text-muted-foreground">Time</Label>
+                  <Label className="text-muted-foreground">时间</Label>
                   <p className="font-medium">
                     {selectedBooking.startTime} - {selectedBooking.endTime}
                   </p>
                 </div>
                 <div>
-                  <Label className="text-muted-foreground">Status</Label>
+                  <Label className="text-muted-foreground">状态</Label>
                   <Badge variant={statusVariant[selectedBooking.status]}>
-                    {selectedBooking.status}
+                    {statusLabels[selectedBooking.status]}
                   </Badge>
                 </div>
               </div>
               {selectedBooking.note && (
                 <div>
-                  <Label className="text-muted-foreground">Client Note</Label>
+                  <Label className="text-muted-foreground">客户备注</Label>
                   <p className="text-sm mt-1">{selectedBooking.note}</p>
                 </div>
               )}
               <div>
-                <Label>Admin Note</Label>
+                <Label>管理备注</Label>
                 <Textarea
                   value={adminNote}
                   onChange={(e) => setAdminNote(e.target.value)}
-                  placeholder="Add internal notes..."
+                  placeholder="添加内部备注..."
                   rows={3}
                 />
               </div>
               <Button onClick={handleSaveNote} className="w-full">
-                Save Note
+                保存备注
               </Button>
             </div>
           )}

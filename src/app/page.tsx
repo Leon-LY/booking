@@ -31,22 +31,21 @@ export default async function HomePage() {
       <main className="flex-1">
         <Hero />
 
-        {/* Services Overview */}
         {services.length > 0 && (
           <section className="py-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-end justify-between mb-8">
                 <div>
-                  <h2 className="text-3xl font-bold">Our Services</h2>
+                  <h2 className="text-3xl font-bold">热门服务</h2>
                   <p className="text-muted-foreground mt-2">
-                    Professional design consultation tailored to your needs
+                    为您量身定制的专业设计咨询服务
                   </p>
                 </div>
                 <Link
                   href="/services"
                   className={buttonVariants({ variant: "outline", className: "hidden sm:flex" })}
                 >
-                  View All <ArrowRight className="ml-2 w-4 h-4" />
+                  查看全部 <ArrowRight className="ml-2 w-4 h-4" />
                 </Link>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -59,7 +58,7 @@ export default async function HomePage() {
                   href="/services"
                   className={buttonVariants({ variant: "outline" })}
                 >
-                  View All Services <ArrowRight className="ml-2 w-4 h-4" />
+                  查看全部服务 <ArrowRight className="ml-2 w-4 h-4" />
                 </Link>
               </div>
             </div>
@@ -68,15 +67,14 @@ export default async function HomePage() {
 
         <ProcessSteps />
 
-        {/* Trust Section */}
         <section className="py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               {[
-                { number: "500+", label: "Happy Clients" },
-                { number: "50+", label: "Expert Designers" },
-                { number: "3+", label: "Years Experience" },
-                { number: "98%", label: "Satisfaction Rate" },
+                { number: "500+", label: "满意客户" },
+                { number: "50+", label: "资深设计师" },
+                { number: "3+", label: "年行业经验" },
+                { number: "98%", label: "好评率" },
               ].map((stat) => (
                 <div key={stat.label}>
                   <div className="text-3xl font-bold text-primary">

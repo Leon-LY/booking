@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
@@ -10,30 +10,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CheckCircle, Home, ArrowRight } from "lucide-react";
 
-interface BookingInfo {
-  id: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  service: { name: string; duration: number };
-  client: { name: string; phone: string };
-}
-
 function SuccessContent() {
   const searchParams = useSearchParams();
   const ref = searchParams.get("ref");
-  const [booking, setBooking] = useState<BookingInfo | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (ref) {
-      // For simplicity, we just display the success without fetching
-      // In production, you'd fetch booking details
-      setLoading(false);
-    } else {
-      setLoading(false);
-    }
-  }, [ref]);
 
   return (
     <>
@@ -47,18 +26,17 @@ function SuccessContent() {
                   <CheckCircle className="w-10 h-10 text-primary" />
                 </div>
               </div>
-              <CardTitle className="text-2xl">Booking Confirmed!</CardTitle>
+              <CardTitle className="text-2xl">预约成功！</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <p className="text-muted-foreground">
-                Your consultation has been booked successfully. We&apos;ll contact
-                you shortly to confirm the details.
+                您的设计咨询已预约成功。我们将尽快与您联系确认具体安排。
               </p>
 
               {ref && (
                 <div className="p-3 bg-muted/50 rounded-lg text-sm text-left">
                   <p className="text-muted-foreground">
-                    Booking Reference: <span className="font-mono font-medium text-foreground">{ref}</span>
+                    预约编号：<span className="font-mono font-medium text-foreground">{ref}</span>
                   </p>
                 </div>
               )}
@@ -66,10 +44,10 @@ function SuccessContent() {
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link href="/" className={buttonVariants({ variant: "outline" })}>
                   <Home className="mr-2 w-4 h-4" />
-                  Back to Home
+                  返回首页
                 </Link>
                 <Link href="/services" className={buttonVariants()}>
-                  Browse More Services
+                  浏览更多服务
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Link>
               </div>

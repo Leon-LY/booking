@@ -26,7 +26,7 @@ async function getService(id: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const service = await getService(id);
-  if (!service) return { title: "Service Not Found" };
+  if (!service) return { title: "服务未找到" };
   return { title: service.name };
 }
 
@@ -42,7 +42,6 @@ export default async function ServiceDetailPage({ params }: Props) {
       <main className="flex-1">
         <section className="py-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Image */}
             <div className="aspect-video bg-muted rounded-xl overflow-hidden mb-8">
               {service.imageUrl ? (
                 <img
@@ -59,16 +58,15 @@ export default async function ServiceDetailPage({ params }: Props) {
               )}
             </div>
 
-            {/* Info */}
             <div className="flex flex-wrap items-center gap-3 mb-4">
               <Badge variant="secondary">{service.category}</Badge>
               <span className="flex items-center gap-1 text-sm text-muted-foreground">
                 <Clock className="w-4 h-4" />
-                {service.duration} minutes
+                {service.duration} 分钟
               </span>
               <span className="flex items-center gap-1 text-sm text-muted-foreground">
                 <DollarSign className="w-4 h-4" />
-                {service.price === 0 ? "Free" : `¥${service.price}`}
+                {service.price === 0 ? "免费" : `¥${service.price}`}
               </span>
             </div>
 
@@ -93,7 +91,7 @@ export default async function ServiceDetailPage({ params }: Props) {
               href={`/booking/${service.id}`}
               className={buttonVariants({ size: "lg", className: "text-lg px-8" })}
             >
-              Book Now <ArrowRight className="ml-2 w-5 h-5" />
+              立即预约 <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
           </div>
         </section>

@@ -15,11 +15,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "DesignPro - Professional Design Consultation",
-    template: "%s | DesignPro",
+    default: "设计拍档 - 专业设计咨询预约",
+    template: "%s | 设计拍档",
   },
   description:
-    "Book professional design consultations online. Browse services, pick a time, and get expert advice for your space.",
+    "在线预约专业设计咨询。浏览服务、选择时间、预约专家，为您的空间量身定制设计方案。",
 };
 
 export default function RootLayout({
@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="zh-CN"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >

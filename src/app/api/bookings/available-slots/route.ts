@@ -9,7 +9,7 @@ export async function GET(request: Request) {
     const serviceId = searchParams.get("serviceId");
 
     if (!dateStr || !serviceId) {
-      return apiError("date and serviceId are required");
+      return apiError("缺少必要参数：date 和 serviceId");
     }
 
     const date = parseISO(dateStr);
@@ -35,7 +35,7 @@ export async function GET(request: Request) {
     });
 
     if (!service) {
-      return apiError("Service not found", 404);
+      return apiError("服务未找到", 404);
     }
 
     // Get day of week
@@ -97,6 +97,6 @@ export async function GET(request: Request) {
     return apiSuccess(availableSlots);
   } catch (error) {
     console.error("GET /api/bookings/available-slots error:", error);
-    return apiError("Failed to fetch available slots", 500);
+    return apiError("获取可用时段失败", 500);
   }
 }

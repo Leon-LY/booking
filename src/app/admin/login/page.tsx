@@ -2,7 +2,7 @@ import { LoginForm } from "@/components/admin/login-form";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Admin Login",
+  title: "管理员登录",
 };
 
 export default function LoginPage() {

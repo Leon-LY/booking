@@ -9,12 +9,12 @@ export async function POST(request: Request) {
 
     // Validate required fields
     if (!serviceId || !dateStr || !startTime || !endTime || !name || !phone) {
-      return apiError("Missing required fields: serviceId, date, startTime, endTime, name, phone");
+      return apiError("缺少必要信息：服务、日期、时间、姓名、手机号");
     }
 
     // Validate phone format (simple)
     if (!/^\d{10,15}$/.test(phone.replace(/[\s-]/g, ""))) {
-      return apiError("Invalid phone number format");
+      return apiError("手机号格式不正确");
     }
 
     const date = parseISO(dateStr);
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 
     // Can't book in the past
     if (startOfDay(date) < today) {
-      return apiError("Cannot book in the past");
+      return apiError("不能预约过去的日期");
     }
 
     // Check if service exists and is active
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     });
 
     if (!service || !service.isActive) {
-      return apiError("Service not available");
+      return apiError("该服务暂不可预约");
     }
 
     // Conflict detection: check for overlapping bookings
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     );
 
     if (hasConflict) {
-      return apiError("Selected time slot is no longer available");
+      return apiError("该时段已被他人预约，请重新选择");
     }
 
     // Find or create client
@@ -115,6 +115,6 @@ export async function POST(request: Request) {
     return apiSuccess(booking);
   } catch (error) {
     console.error("POST /api/bookings error:", error);
-    return apiError("Failed to create booking", 500);
+    return apiError("创建预约失败，请重试", 500);
   }
 }

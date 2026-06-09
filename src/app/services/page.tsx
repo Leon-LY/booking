@@ -8,7 +8,7 @@ import { Metadata } from "next";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Services",
+  title: "服务项目",
 };
 
 async function getServices() {
@@ -25,7 +25,6 @@ async function getServices() {
 export default async function ServicesPage() {
   const services = await getServices();
 
-  // Get unique categories
   const categories = Array.from(
     new Set(services.map((s) => s.category))
   ).sort();
@@ -37,17 +36,16 @@ export default async function ServicesPage() {
         <section className="py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h1 className="text-4xl font-bold mb-4">Our Services</h1>
+              <h1 className="text-4xl font-bold mb-4">服务项目</h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Choose from our range of professional design consultation
-                services. Each session is tailored to your unique needs.
+                选择适合您的专业设计咨询服务，每次咨询都将根据您的需求量身定制。
               </p>
             </div>
 
             {services.length === 0 ? (
               <EmptyState
-                title="No services available"
-                description="Check back soon for new services."
+                title="暂无可用服务"
+                description="新服务即将上线，敬请期待。"
               />
             ) : (
               <div className="space-y-12">

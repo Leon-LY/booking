@@ -16,31 +16,31 @@ interface StatsCardsProps {
 export function StatsCards({ stats }: StatsCardsProps) {
   const cards = [
     {
-      title: "Today's Bookings",
+      title: "今日预约",
       value: stats.todayBookings,
       icon: CalendarCheck,
       color: "text-blue-600 bg-blue-100",
     },
     {
-      title: "Pending",
+      title: "待确认",
       value: stats.pendingBookings,
       icon: Clock,
       color: "text-yellow-600 bg-yellow-100",
     },
     {
-      title: "Completed",
+      title: "已完成",
       value: stats.completedBookings,
       icon: CheckCircle,
       color: "text-green-600 bg-green-100",
     },
     {
-      title: "Total Clients",
+      title: "客户总数",
       value: stats.totalClients,
       icon: Users,
       color: "text-purple-600 bg-purple-100",
     },
     {
-      title: "Total Revenue",
+      title: "总收入",
       value: `¥${stats.totalRevenue.toLocaleString()}`,
       icon: DollarSign,
       color: "text-primary bg-primary/10",

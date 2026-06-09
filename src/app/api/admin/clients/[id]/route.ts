@@ -26,12 +26,12 @@ export async function GET(
     });
 
     if (!client) {
-      return apiError("Client not found", 404);
+      return apiError("客户未找到", 404);
     }
 
     return apiSuccess(client);
   } catch (error) {
     console.error("GET /api/admin/clients/[id] error:", error);
-    return apiError("Failed to fetch client", 500);
+    return apiError("获取客户详情失败", 500);
   }
 }

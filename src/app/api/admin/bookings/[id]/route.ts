@@ -33,6 +33,6 @@ export async function PATCH(
     return apiSuccess(booking);
   } catch (error) {
     console.error("PATCH /api/admin/bookings/[id] error:", error);
-    return apiError("Failed to update booking", 500);
+    return apiError("更新预约失败", 500);
   }
 }

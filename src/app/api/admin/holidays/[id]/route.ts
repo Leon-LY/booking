@@ -15,6 +15,6 @@ export async function DELETE(
     return apiSuccess({ message: "Holiday deleted" });
   } catch (error) {
     console.error("DELETE /api/admin/holidays/[id] error:", error);
-    return apiError("Failed to delete holiday", 500);
+    return apiError("删除休息日失败", 500);
   }
 }

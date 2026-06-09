@@ -12,12 +12,12 @@ export async function GET(
     });
 
     if (!service) {
-      return apiError("Service not found", 404);
+      return apiError("服务未找到", 404);
     }
 
     return apiSuccess(service);
   } catch (error) {
     console.error("GET /api/services/[id] error:", error);
-    return apiError("Failed to fetch service", 500);
+    return apiError("获取服务详情失败", 500);
   }
 }

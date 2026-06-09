@@ -14,7 +14,7 @@ export async function GET() {
     return apiSuccess(holidays);
   } catch (error) {
     console.error("GET /api/admin/holidays error:", error);
-    return apiError("Failed to fetch holidays", 500);
+    return apiError("获取休息日列表失败", 500);
   }
 }
 
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     const { date: dateStr, reason } = body;
 
     if (!dateStr) {
-      return apiError("date is required");
+      return apiError("日期不能为空");
     }
 
     const date = startOfDay(parseISO(dateStr));
@@ -42,6 +42,6 @@ export async function POST(request: Request) {
     return apiSuccess(holiday);
   } catch (error) {
     console.error("POST /api/admin/holidays error:", error);
-    return apiError("Failed to create holiday", 500);
+    return apiError("添加休息日失败", 500);
   }
 }

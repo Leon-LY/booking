@@ -49,11 +49,11 @@ export function ServiceCard({
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <span className="flex items-center gap-1">
             <DollarSign className="w-4 h-4" />
-            {Number(price) === 0 ? "Free" : `¥${Number(price)}`}
+            {Number(price) === 0 ? "免费" : `¥${Number(price)}`}
           </span>
           <span className="flex items-center gap-1">
             <Clock className="w-4 h-4" />
-            {duration} min
+            {duration} 分钟
           </span>
         </div>
       </CardContent>
@@ -62,7 +62,7 @@ export function ServiceCard({
           href={`/services/${id}`}
           className={buttonVariants({ className: "w-full" })}
         >
-          Learn More
+          了解详情
         </Link>
       </CardFooter>
     </Card>

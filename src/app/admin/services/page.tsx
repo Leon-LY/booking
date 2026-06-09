@@ -64,7 +64,7 @@ export default function AdminServicesPage() {
         setError(data.error);
       }
     } catch {
-      setError("Failed to load services");
+      setError("加载服务列表失败");
     } finally {
       setLoading(false);
     }
@@ -96,6 +96,10 @@ export default function AdminServicesPage() {
   };
 
   const handleSave = async () => {
+    if (!form.name || !form.summary) {
+      toast.error("名称和简介不能为空");
+      return;
+    }
     setSaving(true);
     try {
       const body = {
@@ -121,32 +125,32 @@ export default function AdminServicesPage() {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success(editingId ? "Service updated" : "Service created");
+        toast.success(editingId ? "服务已更新" : "服务已创建");
         setDialogOpen(false);
         fetchServices();
       } else {
         toast.error(data.error);
       }
     } catch {
-      toast.error("Failed to save service");
+      toast.error("保存失败");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Delete this service?")) return;
+    if (!confirm("确定要删除该服务吗？")) return;
     try {
       const res = await fetch(`/api/admin/services/${id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
-        toast.success(data.data?.message || "Service deleted");
+        toast.success(data.data?.message || "服务已删除");
         fetchServices();
       } else {
         toast.error(data.error);
       }
     } catch {
-      toast.error("Failed to delete service");
+      toast.error("删除失败");
     }
   };
 
@@ -159,20 +163,20 @@ export default function AdminServicesPage() {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success(`Service ${service.isActive ? "deactivated" : "activated"}`);
+        toast.success(`服务已${service.isActive ? "下架" : "上架"}`);
         fetchServices();
       }
     } catch {
-      toast.error("Failed to update service");
+      toast.error("更新失败");
     }
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Services</h1>
+        <h1 className="text-2xl font-bold">服务管理</h1>
         <Button onClick={openCreate}>
-          <Plus className="w-4 h-4 mr-2" /> Add Service
+          <Plus className="w-4 h-4 mr-2" /> 添加服务
         </Button>
       </div>
 
@@ -186,35 +190,35 @@ export default function AdminServicesPage() {
         <ErrorState message={error} onRetry={fetchServices} />
       ) : services.length === 0 ? (
         <EmptyState
-          title="No services"
-          description="Create your first service to start accepting bookings."
-          action={{ label: "Add Service", onClick: openCreate }}
+          title="暂无服务"
+          description="创建第一个服务以开始接受预约。"
+          action={{ label: "添加服务", onClick: openCreate }}
         />
       ) : (
         <div className="overflow-x-auto border rounded-lg">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-muted/50 text-left">
-                <th className="p-3 font-medium">Name</th>
-                <th className="p-3 font-medium">Category</th>
-                <th className="p-3 font-medium">Price</th>
-                <th className="p-3 font-medium">Duration</th>
-                <th className="p-3 font-medium">Status</th>
-                <th className="p-3 font-medium">Bookings</th>
-                <th className="p-3 font-medium">Actions</th>
+                <th className="p-3 font-medium">名称</th>
+                <th className="p-3 font-medium">分类</th>
+                <th className="p-3 font-medium">价格</th>
+                <th className="p-3 font-medium">时长</th>
+                <th className="p-3 font-medium">状态</th>
+                <th className="p-3 font-medium">预约数</th>
+                <th className="p-3 font-medium">操作</th>
               </tr>
             </thead>
             <tbody>
               {services.map((s) => (
                 <tr key={s.id} className="border-t hover:bg-muted/30">
                   <td className="p-3 font-medium">{s.name}</td>
-                  <td className="p-3 capitalize">{s.category}</td>
+                  <td className="p-3">{s.category}</td>
                   <td className="p-3">¥{Number(s.price)}</td>
-                  <td className="p-3">{s.duration} min</td>
+                  <td className="p-3">{s.duration} 分钟</td>
                   <td className="p-3">
                     <button onClick={() => handleToggleActive(s)}>
                       <Badge variant={s.isActive ? "default" : "secondary"}>
-                        {s.isActive ? "Active" : "Inactive"}
+                        {s.isActive ? "已上架" : "已下架"}
                       </Badge>
                     </button>
                   </td>
@@ -236,25 +240,24 @@ export default function AdminServicesPage() {
         </div>
       )}
 
-      {/* Create/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingId ? "Edit Service" : "Add Service"}
+              {editingId ? "编辑服务" : "添加服务"}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
             <div>
-              <Label>Name *</Label>
+              <Label>名称 *</Label>
               <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             </div>
             <div>
-              <Label>Summary *</Label>
+              <Label>简介 *</Label>
               <Input value={form.summary} onChange={(e) => setForm({ ...form, summary: e.target.value })} />
             </div>
             <div>
-              <Label>Description *</Label>
+              <Label>详细描述 *</Label>
               <Textarea
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -263,30 +266,30 @@ export default function AdminServicesPage() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label>Price (¥)</Label>
+                <Label>价格 (¥)</Label>
                 <Input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
               </div>
               <div>
-                <Label>Duration (min)</Label>
+                <Label>时长 (分钟)</Label>
                 <Input type="number" value={form.duration} onChange={(e) => setForm({ ...form, duration: e.target.value })} />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label>Category</Label>
+                <Label>分类</Label>
                 <Input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} />
               </div>
               <div>
-                <Label>Sort Order</Label>
+                <Label>排序</Label>
                 <Input type="number" value={form.sortOrder} onChange={(e) => setForm({ ...form, sortOrder: e.target.value })} />
               </div>
             </div>
             <div>
-              <Label>Image URL</Label>
+              <Label>图片链接</Label>
               <Input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} />
             </div>
             <Button onClick={handleSave} className="w-full" disabled={saving}>
-              {saving ? "Saving..." : editingId ? "Update" : "Create"}
+              {saving ? "保存中..." : editingId ? "更新" : "创建"}
             </Button>
           </div>
         </DialogContent>

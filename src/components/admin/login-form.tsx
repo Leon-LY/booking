@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,13 +28,13 @@ export function LoginForm() {
       });
 
       if (result?.error) {
-        toast.error("Invalid email or password");
+        toast.error("邮箱或密码错误");
       } else {
         router.push("/admin");
         router.refresh();
       }
     } catch {
-      toast.error("Login failed. Please try again.");
+      toast.error("登录失败，请重试。");
     } finally {
       setLoading(false);
     }
@@ -45,25 +44,25 @@ export function LoginForm() {
     <Card className="w-full max-w-md">
       <CardHeader className="text-center">
         <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center mx-auto mb-3">
-          <span className="text-primary-foreground font-bold text-xl">D</span>
+          <span className="text-primary-foreground font-bold text-xl">设</span>
         </div>
-        <CardTitle className="text-2xl">Admin Login</CardTitle>
+        <CardTitle className="text-2xl">管理后台登录</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">邮箱</Label>
             <Input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@designpro.com"
+              placeholder="admin@shejipaidang.com"
               required
             />
           </div>
           <div>
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">密码</Label>
             <Input
               id="password"
               type="password"
@@ -77,10 +76,10 @@ export function LoginForm() {
             {loading ? (
               <>
                 <Loader2 className="mr-2 w-4 h-4 animate-spin" />
-                Signing in...
+                登录中...
               </>
             ) : (
-              "Sign In"
+              "登录"
             )}
           </Button>
         </form>

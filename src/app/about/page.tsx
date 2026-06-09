@@ -3,7 +3,7 @@ import { Footer } from "@/components/layout/footer";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About Us",
+  title: "关于我们",
 };
 
 export default function AboutPage() {
@@ -13,52 +13,48 @@ export default function AboutPage() {
       <main className="flex-1">
         <section className="py-16">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl font-bold mb-8 text-center">About Us</h1>
+            <h1 className="text-4xl font-bold mb-8 text-center">关于我们</h1>
 
             <div className="prose prose-neutral max-w-none space-y-6">
               <p className="text-lg text-muted-foreground leading-relaxed">
-                DesignPro is a professional interior design consultation platform
-                connecting clients with experienced designers. We believe every
-                space has the potential to be beautiful, functional, and uniquely
-                yours.
+                设计拍档是一个专业的室内设计咨询预约平台，致力于连接客户与资深设计师。
+                我们相信每个空间都有潜力变得美观、实用且独具个性。
               </p>
 
-              <h2 className="text-2xl font-semibold mt-12 mb-4">Our Mission</h2>
+              <h2 className="text-2xl font-semibold mt-12 mb-4">我们的使命</h2>
               <p className="text-muted-foreground leading-relaxed">
-                To make professional design consultation accessible to everyone.
-                Whether you&apos;re renovating a single room or planning a complete
-                home makeover, our designers are here to guide you every step of
-                the way.
+                让专业设计咨询触手可及。无论是单间改造还是全屋装修，
+                我们的设计师都将全程为您提供专业指导。
               </p>
 
               <h2 className="text-2xl font-semibold mt-12 mb-4">
-                Why Choose Us
+                为什么选择我们
               </h2>
               <ul className="space-y-3 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">✓</span>
-                  Experienced professional designers with proven track records
+                  经验丰富的专业设计师，有大量成功案例
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">✓</span>
-                  Personalized one-on-one consultations tailored to your needs
+                  一对一量身定制的个性化咨询服务
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">✓</span>
-                  Flexible scheduling that works around your calendar
+                  灵活的时间安排，方便您的日程
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">✓</span>
-                  Transparent pricing with no hidden costs
+                  透明定价，无隐藏费用
                 </li>
               </ul>
 
-              <h2 className="text-2xl font-semibold mt-12 mb-4">Contact Us</h2>
+              <h2 className="text-2xl font-semibold mt-12 mb-4">联系我们</h2>
               <div className="space-y-2 text-muted-foreground">
-                <p>📞 Phone: 400-888-8888</p>
-                <p>📧 Email: hello@designpro.com</p>
-                <p>📍 Address: 123 Design Street, Creative District</p>
-                <p>🕐 Hours: Monday - Saturday, 9:00 AM - 6:00 PM</p>
+                <p>📞 电话：400-888-8888</p>
+                <p>📧 邮箱：hello@shejipaidang.com</p>
+                <p>📍 地址：北京市朝阳区创意设计大街 123 号</p>
+                <p>🕐 工作时间：周一至周六 9:00 - 18:00</p>
               </div>
             </div>
           </div>

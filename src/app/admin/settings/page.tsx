@@ -43,12 +43,7 @@ interface SiteSettings {
   [key: string]: string;
 }
 
-const DAY_LABELS = [
-  "Sunday", "Monday", "Tuesday", "Wednesday",
-  "Thursday", "Friday", "Saturday",
-];
-
-const DAY_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const DAY_LABELS = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
 
 export default function AdminSettingsPage() {
   const [tab, setTab] = useState<"slots" | "holidays" | "settings">("slots");
@@ -91,7 +86,7 @@ export default function AdminSettingsPage() {
         setSettingsForm(Object.entries(settingsData.data));
       }
     } catch {
-      setError("Failed to load settings");
+      setError("加载设置失败");
     } finally {
       setLoading(false);
     }
@@ -101,7 +96,6 @@ export default function AdminSettingsPage() {
     fetchData();
   }, [fetchData]);
 
-  // Time Slot handlers
   const openSlotCreate = () => {
     setEditingSlot(null);
     setSlotForm({ dayOfWeek: "1", startTime: "09:00", endTime: "12:00" });
@@ -110,7 +104,11 @@ export default function AdminSettingsPage() {
 
   const openSlotEdit = (slot: TimeSlot) => {
     setEditingSlot(slot);
-    setSlotForm({ dayOfWeek: String(slot.dayOfWeek), startTime: slot.startTime, endTime: slot.endTime });
+    setSlotForm({
+      dayOfWeek: String(slot.dayOfWeek),
+      startTime: slot.startTime,
+      endTime: slot.endTime,
+    });
     setSlotDialogOpen(true);
   };
 
@@ -132,25 +130,25 @@ export default function AdminSettingsPage() {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success(editingSlot ? "Time slot updated" : "Time slot created");
+        toast.success(editingSlot ? "时段已更新" : "时段已创建");
         setSlotDialogOpen(false);
         fetchData();
       } else {
         toast.error(data.error);
       }
     } catch {
-      toast.error("Failed to save time slot");
+      toast.error("保存失败");
     }
   };
 
   const handleDeleteSlot = async (id: number) => {
-    if (!confirm("Delete this time slot?")) return;
+    if (!confirm("确定删除该时段吗？")) return;
     try {
       await fetch(`/api/admin/timeslots/${id}`, { method: "DELETE" });
-      toast.success("Time slot deleted");
+      toast.success("时段已删除");
       fetchData();
     } catch {
-      toast.error("Failed to delete");
+      toast.error("删除失败");
     }
   };
 
@@ -163,15 +161,14 @@ export default function AdminSettingsPage() {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success(`Time slot ${slot.isActive ? "deactivated" : "activated"}`);
+        toast.success(`时段已${slot.isActive ? "停用" : "启用"}`);
         fetchData();
       }
     } catch {
-      toast.error("Failed to update");
+      toast.error("更新失败");
     }
   };
 
-  // Holiday handlers
   const handleAddHoliday = async () => {
     if (!holidayDate) return;
     try {
@@ -185,7 +182,7 @@ export default function AdminSettingsPage() {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success("Holiday added");
+        toast.success("休息日已添加");
         setHolidayDate(undefined);
         setHolidayReason("");
         fetchData();
@@ -193,25 +190,24 @@ export default function AdminSettingsPage() {
         toast.error(data.error);
       }
     } catch {
-      toast.error("Failed to add holiday");
+      toast.error("添加失败");
     }
   };
 
   const handleDeleteHoliday = async (id: number) => {
-    if (!confirm("Remove this holiday?")) return;
+    if (!confirm("确定移除该休息日吗？")) return;
     try {
       await fetch(`/api/admin/holidays/${id}`, { method: "DELETE" });
-      toast.success("Holiday removed");
+      toast.success("休息日已移除");
       fetchData();
     } catch {
-      toast.error("Failed to delete");
+      toast.error("删除失败");
     }
   };
 
-  // Settings handlers
   const handleUpdateSetting = async (key: string, value: string) => {
-    const updated = { ...siteSettings, [key]: value };
     try {
+      const updated = { ...siteSettings, [key]: value };
       const res = await fetch("/api/admin/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -219,11 +215,11 @@ export default function AdminSettingsPage() {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success("Settings updated");
+        toast.success("设置已保存");
         setSiteSettings(updated);
       }
     } catch {
-      toast.error("Failed to update settings");
+      toast.error("保存失败");
     }
   };
 
@@ -238,14 +234,14 @@ export default function AdminSettingsPage() {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success("Setting added");
+        toast.success("设置已添加");
         setSiteSettings(updated);
         setSettingsForm(Object.entries(updated));
         setNewKey("");
         setNewValue("");
       }
     } catch {
-      toast.error("Failed to add setting");
+      toast.error("添加失败");
     }
   };
 
@@ -259,12 +255,12 @@ export default function AdminSettingsPage() {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success("Setting removed");
+        toast.success("设置已删除");
         setSiteSettings(rest);
         setSettingsForm(Object.entries(rest));
       }
     } catch {
-      toast.error("Failed to remove setting");
+      toast.error("删除失败");
     }
   };
 
@@ -283,29 +279,26 @@ export default function AdminSettingsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Settings</h1>
+      <h1 className="text-2xl font-bold">系统设置</h1>
 
-      {/* Tabs */}
       <div className="flex gap-2 border-b pb-2">
         {(["slots", "holidays", "settings"] as const).map((t) => (
           <Button
             key={t}
             variant={tab === t ? "default" : "ghost"}
             onClick={() => setTab(t)}
-            className="capitalize"
           >
-            {t === "slots" ? "Time Slots" : t === "holidays" ? "Holidays" : "Site Settings"}
+            {t === "slots" ? "时段管理" : t === "holidays" ? "休息日" : "站点设置"}
           </Button>
         ))}
       </div>
 
-      {/* Time Slots */}
       {tab === "slots" && (
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold">Time Slots</h2>
+            <h2 className="text-lg font-semibold">可预约时段</h2>
             <Button onClick={openSlotCreate}>
-              <Plus className="w-4 h-4 mr-2" /> Add Slot
+              <Plus className="w-4 h-4 mr-2" /> 添加时段
             </Button>
           </div>
           <div className="space-y-2">
@@ -315,13 +308,16 @@ export default function AdminSettingsPage() {
                 <div key={day} className="border rounded-lg p-3">
                   <h3 className="font-medium text-sm mb-2">{day}</h3>
                   {daySlots.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">No slots</p>
+                    <p className="text-sm text-muted-foreground">暂未设置</p>
                   ) : (
                     <div className="flex flex-wrap gap-2">
                       {daySlots.map((slot) => (
                         <div key={slot.id} className="flex items-center gap-2">
                           <button onClick={() => handleToggleSlot(slot)}>
-                            <Badge variant={slot.isActive ? "default" : "secondary"} className="cursor-pointer">
+                            <Badge
+                              variant={slot.isActive ? "default" : "secondary"}
+                              className="cursor-pointer"
+                            >
                               {slot.startTime} - {slot.endTime}
                             </Badge>
                           </button>
@@ -342,13 +338,12 @@ export default function AdminSettingsPage() {
         </div>
       )}
 
-      {/* Holidays */}
       {tab === "holidays" && (
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Holidays</h2>
+          <h2 className="text-lg font-semibold">休息日管理</h2>
           <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-end">
             <div>
-              <Label>Date</Label>
+              <Label>日期</Label>
               <Calendar
                 mode="single"
                 selected={holidayDate}
@@ -358,15 +353,15 @@ export default function AdminSettingsPage() {
             </div>
             <div className="flex-1 space-y-2">
               <div>
-                <Label>Reason (optional)</Label>
+                <Label>原因（可选）</Label>
                 <Input
                   value={holidayReason}
                   onChange={(e) => setHolidayReason(e.target.value)}
-                  placeholder="e.g., National Holiday"
+                  placeholder="例：法定节假日"
                 />
               </div>
               <Button onClick={handleAddHoliday} disabled={!holidayDate}>
-                Add Holiday
+                添加休息日
               </Button>
             </div>
           </div>
@@ -378,7 +373,7 @@ export default function AdminSettingsPage() {
               >
                 <div>
                   <span className="font-medium">
-                    {format(parseISO(h.date), "MMM d, yyyy")}
+                    {format(parseISO(h.date), "yyyy年M月d日")}
                   </span>
                   {h.reason && (
                     <span className="text-muted-foreground ml-2">{h.reason}</span>
@@ -391,17 +386,16 @@ export default function AdminSettingsPage() {
             ))}
             {holidays.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-4">
-                No holidays set.
+                暂无休息日。
               </p>
             )}
           </div>
         </div>
       )}
 
-      {/* Site Settings */}
       {tab === "settings" && (
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Site Settings</h2>
+          <h2 className="text-lg font-semibold">站点配置</h2>
           <div className="space-y-3">
             {settingsForm.map(([key, value]) => (
               <div key={key} className="flex items-end gap-3">
@@ -419,9 +413,14 @@ export default function AdminSettingsPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleUpdateSetting(key, settingsForm.find(([k]) => k === key)?.[1] || "")}
+                  onClick={() =>
+                    handleUpdateSetting(
+                      key,
+                      settingsForm.find(([k]) => k === key)?.[1] || ""
+                    )
+                  }
                 >
-                  Save
+                  保存
                 </Button>
                 <Button
                   variant="ghost"
@@ -435,31 +434,38 @@ export default function AdminSettingsPage() {
           </div>
           <div className="flex items-end gap-3 pt-4 border-t">
             <div>
-              <Label>Key</Label>
-              <Input value={newKey} onChange={(e) => setNewKey(e.target.value)} placeholder="setting_key" />
+              <Label>键名</Label>
+              <Input
+                value={newKey}
+                onChange={(e) => setNewKey(e.target.value)}
+                placeholder="setting_key"
+              />
             </div>
             <div className="flex-1">
-              <Label>Value</Label>
-              <Input value={newValue} onChange={(e) => setNewValue(e.target.value)} placeholder="setting value" />
+              <Label>值</Label>
+              <Input
+                value={newValue}
+                onChange={(e) => setNewValue(e.target.value)}
+                placeholder="设置值"
+              />
             </div>
             <Button onClick={handleAddSetting}>
-              <Plus className="w-4 h-4 mr-2" /> Add
+              <Plus className="w-4 h-4 mr-2" /> 添加
             </Button>
           </div>
         </div>
       )}
 
-      {/* Slot Dialog */}
       <Dialog open={slotDialogOpen} onOpenChange={setSlotDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {editingSlot ? "Edit Time Slot" : "Add Time Slot"}
+              {editingSlot ? "编辑时段" : "添加时段"}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
             <div>
-              <Label>Day of Week</Label>
+              <Label>星期</Label>
               <Select
                 value={slotForm.dayOfWeek}
                 onValueChange={(v) => { if (v) setSlotForm({ ...slotForm, dayOfWeek: v }); }}
@@ -468,7 +474,7 @@ export default function AdminSettingsPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {DAY_SHORT.map((day, i) => (
+                  {DAY_LABELS.map((day, i) => (
                     <SelectItem key={i} value={String(i)}>{day}</SelectItem>
                   ))}
                 </SelectContent>
@@ -476,7 +482,7 @@ export default function AdminSettingsPage() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label>Start Time</Label>
+                <Label>开始时间</Label>
                 <Input
                   type="time"
                   value={slotForm.startTime}
@@ -484,7 +490,7 @@ export default function AdminSettingsPage() {
                 />
               </div>
               <div>
-                <Label>End Time</Label>
+                <Label>结束时间</Label>
                 <Input
                   type="time"
                   value={slotForm.endTime}
@@ -493,7 +499,7 @@ export default function AdminSettingsPage() {
               </div>
             </div>
             <Button onClick={handleSaveSlot} className="w-full">
-              {editingSlot ? "Update" : "Create"}
+              {editingSlot ? "更新" : "创建"}
             </Button>
           </div>
         </DialogContent>

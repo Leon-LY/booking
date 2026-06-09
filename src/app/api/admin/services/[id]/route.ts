@@ -32,7 +32,7 @@ export async function PUT(
     return apiSuccess(service);
   } catch (error) {
     console.error("PUT /api/admin/services/[id] error:", error);
-    return apiError("Failed to update service", 500);
+    return apiError("更新服务失败", 500);
   }
 }
 
@@ -64,6 +64,6 @@ export async function DELETE(
     return apiSuccess({ message: "Service deleted" });
   } catch (error) {
     console.error("DELETE /api/admin/services/[id] error:", error);
-    return apiError("Failed to delete service", 500);
+    return apiError("删除服务失败", 500);
   }
 }

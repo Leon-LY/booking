@@ -58,7 +58,7 @@ export async function GET(request: Request) {
     return apiSuccess(bookings, getPaginationMeta(total, page, limit));
   } catch (error) {
     console.error("GET /api/admin/bookings error:", error);
-    return apiError("Failed to fetch bookings", 500);
+    return apiError("获取预约列表失败", 500);
   }
 }
 
@@ -73,7 +73,7 @@ export async function PATCH(request: Request) {
     const { status, adminNote } = body;
 
     if (!id) {
-      return apiError("Booking id is required");
+      return apiError("缺少预约 ID");
     }
 
     const booking = await prisma.booking.update({
@@ -87,6 +87,6 @@ export async function PATCH(request: Request) {
     return apiSuccess(booking);
   } catch (error) {
     console.error("PATCH /api/admin/bookings error:", error);
-    return apiError("Failed to update booking", 500);
+    return apiError("更新预约失败", 500);
   }
 }
