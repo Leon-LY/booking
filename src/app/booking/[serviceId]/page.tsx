@@ -16,6 +16,7 @@ import { ErrorState } from "@/components/shared/error-state";
 import { apiPath } from "@/lib/utils";
 import { toast } from "sonner";
 import { format, addDays } from "date-fns";
+import { zhCN } from "date-fns/locale";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -247,6 +248,7 @@ export default function BookingPage() {
                     selected={date}
                     onSelect={handleDateSelect}
                     disabled={(d) => d < addDays(new Date(), 0)}
+                    locale={zhCN}
                     className="rounded-md border"
                   />
                 </div>

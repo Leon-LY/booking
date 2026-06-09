@@ -1,5 +1,4 @@
-import { AdminSidebar } from "@/components/layout/admin-sidebar";
-import { AdminHeader } from "@/components/layout/admin-header";
+import { AdminShell } from "@/components/layout/admin-shell";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
@@ -16,13 +15,5 @@ export default async function AdminLayout({
     redirect("/admin/login");
   }
 
-  return (
-    <div className="min-h-screen">
-      <AdminSidebar />
-      <div className="lg:pl-64">
-        <AdminHeader />
-        <main className="p-4 lg:p-6">{children}</main>
-      </div>
-    </div>
-  );
+  return <AdminShell>{children}</AdminShell>;
 }

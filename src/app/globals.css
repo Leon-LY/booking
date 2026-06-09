@@ -46,6 +46,24 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --animate-fade-in: fade-in 0.5s ease-out;
+  --animate-slide-up: slide-up 0.5s ease-out;
+  --animate-pulse-soft: pulse-soft 2s ease-in-out infinite;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 
 :root {
@@ -55,32 +73,32 @@
   --card-foreground: oklch(0.2 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.2 0 0);
-  --primary: oklch(0.45 0.12 44); /* Warm wood #c1703a */
+  --primary: oklch(0.50 0.14 44);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.92 0.02 44);
+  --secondary: oklch(0.94 0.02 44);
   --secondary-foreground: oklch(0.3 0.08 44);
   --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.5 0 0);
-  --accent: oklch(0.9 0.03 44);
+  --muted-foreground: oklch(0.48 0 0);
+  --accent: oklch(0.92 0.04 44);
   --accent-foreground: oklch(0.35 0.1 44);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.88 0 0);
   --input: oklch(0.88 0 0);
-  --ring: oklch(0.45 0.12 44);
-  --chart-1: oklch(0.45 0.12 44);
-  --chart-2: oklch(0.55 0.15 44);
-  --chart-3: oklch(0.35 0.08 44);
-  --chart-4: oklch(0.65 0.18 44);
-  --chart-5: oklch(0.25 0.05 44);
+  --ring: oklch(0.50 0.14 44);
+  --chart-1: oklch(0.50 0.14 44);
+  --chart-2: oklch(0.60 0.16 44);
+  --chart-3: oklch(0.40 0.10 44);
+  --chart-4: oklch(0.70 0.18 44);
+  --chart-5: oklch(0.30 0.06 44);
   --radius: 0.625rem;
   --sidebar: oklch(0.15 0 0);
   --sidebar-foreground: oklch(0.92 0 0);
-  --sidebar-primary: oklch(0.45 0.12 44);
+  --sidebar-primary: oklch(0.50 0.14 44);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.25 0 0);
   --sidebar-accent-foreground: oklch(0.92 0 0);
   --sidebar-border: oklch(0.3 0 0);
-  --sidebar-ring: oklch(0.45 0.12 44);
+  --sidebar-ring: oklch(0.50 0.14 44);
 }
 
 .dark {
@@ -90,31 +108,31 @@
   --card-foreground: oklch(0.92 0 0);
   --popover: oklch(0.17 0 0);
   --popover-foreground: oklch(0.92 0 0);
-  --primary: oklch(0.55 0.15 44);
+  --primary: oklch(0.58 0.16 44);
   --primary-foreground: oklch(0.13 0 0);
   --secondary: oklch(0.25 0 0);
   --secondary-foreground: oklch(0.92 0 0);
   --muted: oklch(0.25 0 0);
   --muted-foreground: oklch(0.65 0 0);
-  --accent: oklch(0.3 0.04 44);
+  --accent: oklch(0.30 0.04 44);
   --accent-foreground: oklch(0.92 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
+  --destructive: oklch(0.65 0.2 22);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.55 0.15 44);
-  --chart-1: oklch(0.55 0.15 44);
-  --chart-2: oklch(0.65 0.18 44);
-  --chart-3: oklch(0.45 0.12 44);
-  --chart-4: oklch(0.75 0.2 44);
-  --chart-5: oklch(0.35 0.08 44);
+  --ring: oklch(0.58 0.16 44);
+  --chart-1: oklch(0.58 0.16 44);
+  --chart-2: oklch(0.68 0.20 44);
+  --chart-3: oklch(0.48 0.12 44);
+  --chart-4: oklch(0.78 0.22 44);
+  --chart-5: oklch(0.38 0.08 44);
   --sidebar: oklch(0.13 0 0);
   --sidebar-foreground: oklch(0.92 0 0);
-  --sidebar-primary: oklch(0.55 0.15 44);
+  --sidebar-primary: oklch(0.58 0.16 44);
   --sidebar-primary-foreground: oklch(0.13 0 0);
   --sidebar-accent: oklch(0.25 0 0);
   --sidebar-accent-foreground: oklch(0.92 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.55 0.15 44);
+  --sidebar-ring: oklch(0.58 0.16 44);
 }
 
 @layer base {
@@ -125,15 +143,27 @@
     @apply bg-background text-foreground;
   }
   html {
-    @apply font-sans;
+    @apply font-sans scroll-smooth;
   }
 }
 
 /* Custom utilities */
 .card-hover {
-  @apply transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg;
+  @apply transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:shadow-primary/5;
 }
 
 .glass-nav {
-  @apply backdrop-blur-md bg-white/80 border-b border-border/50;
+  @apply backdrop-blur-lg bg-white/75 border-b border-border/40 supports-[backdrop-filter]:bg-white/60;
+}
+
+/* Scroll reveal animation */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animate-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
 }

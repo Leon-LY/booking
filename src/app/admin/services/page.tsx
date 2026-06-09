@@ -115,8 +115,8 @@ export default function AdminServicesPage() {
       };
 
       const url = editingId
-        ? `/api/admin/services/${editingId}`
-        : "/api/admin/services";
+        ? apiPath(`/api/admin/services/${editingId}`)
+        : apiPath("/api/admin/services");
       const method = editingId ? "PUT" : "POST";
 
       const res = await fetch(url, {
