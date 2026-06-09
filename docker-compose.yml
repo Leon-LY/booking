@@ -8,8 +8,12 @@ services:
     env_file:
       - .env.production
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/booking"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    networks:
+      - default
+      - deploy_default
+
+networks:
+  default:
+    driver: bridge
+  deploy_default:
+    external: true
