@@ -22,6 +22,7 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/error-state";
 import { EmptyState } from "@/components/shared/empty-state";
+import { apiPath } from "@/lib/utils";
 import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
 import {
@@ -82,7 +83,7 @@ export default function AdminBookingsPage() {
       const params = new URLSearchParams({ page: String(page), limit: String(limit) });
       if (status !== "ALL") params.set("status", status);
       if (search) params.set("search", search);
-      const res = await fetch(`/api/admin/bookings?${params}`);
+      const res = await fetch(apiPath(`/api/admin/bookings?${params}`));
       const data = await res.json();
       if (data.success) {
         setBookings(data.data);
@@ -103,7 +104,7 @@ export default function AdminBookingsPage() {
 
   const handleStatusChange = async (bookingId: string, newStatus: string) => {
     try {
-      const res = await fetch(`/api/admin/bookings/${bookingId}`, {
+      const res = await fetch(apiPath(`/api/admin/bookings/${bookingId}`), {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
@@ -123,7 +124,7 @@ export default function AdminBookingsPage() {
   const handleSaveNote = async () => {
     if (!selectedBooking) return;
     try {
-      const res = await fetch(`/api/admin/bookings/${selectedBooking.id}`, {
+      const res = await fetch(apiPath(`/api/admin/bookings/${selectedBooking.id}`), {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ adminNote }),

@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/error-state";
 import { EmptyState } from "@/components/shared/empty-state";
+import { apiPath } from "@/lib/utils";
 import { Search, ChevronLeft, ChevronRight, Eye } from "lucide-react";
 import { format, parseISO } from "date-fns";
 
@@ -80,7 +81,7 @@ export default function AdminClientsPage() {
     try {
       const params = new URLSearchParams({ page: String(page), limit: String(limit) });
       if (search) params.set("search", search);
-      const res = await fetch(`/api/admin/clients?${params}`);
+      const res = await fetch(apiPath(`/api/admin/clients?${params}`));
       const data = await res.json();
       if (data.success) {
         setClients(data.data);
@@ -103,7 +104,7 @@ export default function AdminClientsPage() {
     setDetailLoading(true);
     setDialogOpen(true);
     try {
-      const res = await fetch(`/api/admin/clients/${id}`);
+      const res = await fetch(apiPath(`/api/admin/clients/${id}`));
       const data = await res.json();
       if (data.success) {
         setSelectedClient(data.data);

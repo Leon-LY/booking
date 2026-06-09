@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/error-state";
+import { apiPath } from "@/lib/utils";
 import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
 import { Plus, Trash2, Pencil } from "lucide-react";
@@ -70,9 +71,9 @@ export default function AdminSettingsPage() {
     setError(null);
     try {
       const [slotsRes, holidaysRes, settingsRes] = await Promise.all([
-        fetch("/api/admin/timeslots"),
-        fetch("/api/admin/holidays"),
-        fetch("/api/admin/settings"),
+        fetch(apiPath("/api/admin/timeslots")),
+        fetch(apiPath("/api/admin/holidays")),
+        fetch(apiPath("/api/admin/settings")),
       ]);
       const [slotsData, holidaysData, settingsData] = await Promise.all([
         slotsRes.json(),
@@ -120,8 +121,8 @@ export default function AdminSettingsPage() {
         endTime: slotForm.endTime,
       };
       const url = editingSlot
-        ? `/api/admin/timeslots/${editingSlot.id}`
-        : "/api/admin/timeslots";
+        ? apiPath(`/api/admin/timeslots/${editingSlot.id}`)
+        : apiPath("/api/admin/timeslots");
       const method = editingSlot ? "PUT" : "POST";
       const res = await fetch(url, {
         method,
@@ -144,7 +145,7 @@ export default function AdminSettingsPage() {
   const handleDeleteSlot = async (id: number) => {
     if (!confirm("确定删除该时段吗？")) return;
     try {
-      await fetch(`/api/admin/timeslots/${id}`, { method: "DELETE" });
+      await fetch(apiPath(`/api/admin/timeslots/${id}`), { method: "DELETE" });
       toast.success("时段已删除");
       fetchData();
     } catch {
@@ -154,7 +155,7 @@ export default function AdminSettingsPage() {
 
   const handleToggleSlot = async (slot: TimeSlot) => {
     try {
-      const res = await fetch(`/api/admin/timeslots/${slot.id}`, {
+      const res = await fetch(apiPath(`/api/admin/timeslots/${slot.id}`), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isActive: !slot.isActive }),
@@ -172,7 +173,7 @@ export default function AdminSettingsPage() {
   const handleAddHoliday = async () => {
     if (!holidayDate) return;
     try {
-      const res = await fetch("/api/admin/holidays", {
+      const res = await fetch(apiPath("/api/admin/holidays"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -197,7 +198,7 @@ export default function AdminSettingsPage() {
   const handleDeleteHoliday = async (id: number) => {
     if (!confirm("确定移除该休息日吗？")) return;
     try {
-      await fetch(`/api/admin/holidays/${id}`, { method: "DELETE" });
+      await fetch(apiPath(`/api/admin/holidays/${id}`), { method: "DELETE" });
       toast.success("休息日已移除");
       fetchData();
     } catch {
@@ -208,7 +209,7 @@ export default function AdminSettingsPage() {
   const handleUpdateSetting = async (key: string, value: string) => {
     try {
       const updated = { ...siteSettings, [key]: value };
-      const res = await fetch("/api/admin/settings", {
+      const res = await fetch(apiPath("/api/admin/settings"), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ settings: updated }),
@@ -227,7 +228,7 @@ export default function AdminSettingsPage() {
     if (!newKey || !newValue) return;
     const updated = { ...siteSettings, [newKey]: newValue };
     try {
-      const res = await fetch("/api/admin/settings", {
+      const res = await fetch(apiPath("/api/admin/settings"), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ settings: updated }),
@@ -248,7 +249,7 @@ export default function AdminSettingsPage() {
   const handleDeleteSetting = async (key: string) => {
     const { [key]: _, ...rest } = siteSettings;
     try {
-      const res = await fetch("/api/admin/settings", {
+      const res = await fetch(apiPath("/api/admin/settings"), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ settings: rest }),

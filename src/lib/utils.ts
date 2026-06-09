@@ -113,6 +113,13 @@ export function apiError(message: string, status = 400) {
   return Response.json({ success: false, error: message }, { status });
 }
 
+// Base path helper for client-side fetch
+const BASE_PATH = "/booking";
+
+export function apiPath(path: string): string {
+  return `${BASE_PATH}${path}`;
+}
+
 // Pagination
 export function getPaginationParams(searchParams: URLSearchParams) {
   const page = Math.max(1, parseInt(searchParams.get("page") || "1"));

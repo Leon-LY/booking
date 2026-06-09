@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/error-state";
 import { EmptyState } from "@/components/shared/empty-state";
+import { apiPath } from "@/lib/utils";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 
@@ -56,7 +57,7 @@ export default function AdminServicesPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/services");
+      const res = await fetch(apiPath("/api/admin/services"));
       const data = await res.json();
       if (data.success) {
         setServices(data.data);
@@ -141,7 +142,7 @@ export default function AdminServicesPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("确定要删除该服务吗？")) return;
     try {
-      const res = await fetch(`/api/admin/services/${id}`, { method: "DELETE" });
+      const res = await fetch(apiPath(`/api/admin/services/${id}`), { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
         toast.success(data.data?.message || "服务已删除");
@@ -156,7 +157,7 @@ export default function AdminServicesPage() {
 
   const handleToggleActive = async (service: Service) => {
     try {
-      const res = await fetch(`/api/admin/services/${service.id}`, {
+      const res = await fetch(apiPath(`/api/admin/services/${service.id}`), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isActive: !service.isActive }),

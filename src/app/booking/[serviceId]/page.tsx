@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/shared/error-state";
+import { apiPath } from "@/lib/utils";
 import { toast } from "sonner";
 import { format, addDays } from "date-fns";
 import { useForm } from "react-hook-form";
@@ -77,7 +78,7 @@ export default function BookingPage() {
   }, [stepParam]);
 
   useEffect(() => {
-    fetch(`/api/services/${serviceId}`)
+    fetch(apiPath(`/api/services/${serviceId}`))
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -96,7 +97,7 @@ export default function BookingPage() {
       const dateStr = format(selectedDate, "yyyy-MM-dd");
       try {
         const res = await fetch(
-          `/api/bookings/available-slots?date=${dateStr}&serviceId=${serviceId}`
+          apiPath(`/api/bookings/available-slots?date=${dateStr}&serviceId=${serviceId}`)
         );
         const data = await res.json();
         if (data.success) {
@@ -141,7 +142,7 @@ export default function BookingPage() {
     if (!date || !selectedSlot) return;
     setSubmitting(true);
     try {
-      const res = await fetch("/api/bookings", {
+      const res = await fetch(apiPath("/api/bookings"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
